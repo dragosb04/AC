@@ -1,36 +1,35 @@
 module fac (
-    input  x, y, ci,
-    output z, co
+	input x, y, ci,
+	output z, co
 );
-  assign z  = x ^ y ^ ci;
-  assign co = (x & y) | (x & ci) | (y & ci);
+
+	assign z = x ^ y ^ ci;
+	assign co = (x | y) & (ci & (x ^ y));
 
 endmodule
 
 module fac_tb;
 
-  reg x, y, ci;
-  wire z, co;
+	reg x, y, ci;
+	wire z, co;
 
-  fac uut (
-      .x (x),
-      .y (y),
-      .ci(ci),
-      .z (z),
-      .co(co)
-  );
+	fac uut (
+		.x(x),
+		.y(y),
+		.ci(ci),
+		.z(z),
+		.co(co)
+	);
+	
+	integer k;
 
-  integer i;
-  initial begin
-    $display("x y ci | z co");
-    $display("-------|------");
+	initial begin
+	
+	$display("Time\tx\ty\tci\tz\tco");
+	$monitor("%0t\t%b\t%b\t%b\t%b\t%b", $time, x, y, ci, z, co);
+	{x, y, ci} = 0;
+	for (k = 1; k < 8; k = k + 1)
+		#10 {x, y, ci} = k;
+	end
 
-    {x, y, ci} = 0;
-    for (i = 0; i < 8; i = i + 1) begin
-      {x, y, ci} = i;
-      #20;
-      $display("%b %b %b  | %b %b", x, y, ci, z, co);
-    end
-
-  end
 endmodule
